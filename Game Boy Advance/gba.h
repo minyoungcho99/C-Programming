@@ -1,13 +1,8 @@
 #ifndef GBA_H
 #define GBA_H
 
-/* An unsigned 32-bit (4-byte) type */
 typedef unsigned int u32;
-
-/* An unsigned 16-bit (2-byte) type */
 typedef unsigned short u16;
-
-/* An unsigned 8-bit (1-byte) type. Note that this type cannot be written onto RAM directly. */
 typedef unsigned char u8;
 
 #define OFFSET(row, col, width) ((col)+(width)*(row))
@@ -27,11 +22,9 @@ typedef unsigned char u8;
 #define BLACK COLOR(0, 0, 0)
 #define GRAY COLOR(5, 5, 5)
 
-// The size of the GBA Screen
 #define WIDTH 240
 #define HEIGHT 160
 
-// This is initialized in gba.c
 extern volatile unsigned short *videoBuffer;
 
 #define BUTTON_A        (1<<0)
@@ -47,12 +40,6 @@ extern volatile unsigned short *videoBuffer;
 
 #define BUTTONS (*(volatile u32 *) 0x4000130)
 #define KEY_DOWN(key, buttons) (~(buttons) & (key))
-
-// TODO: COMPLETE THIS MACRO.
-// Remember that a button is recently pressed if it wasn't pressed in the last
-// input (oldButtons) but is pressed in the current input. Use the KEY_DOWN
-// macro to check if the button was pressed in the inputs.
-#define KEY_JUST_PRESSED(key, buttons, oldbuttons) (!KEY_DOWN(key, buttons) && KEY_DOWN(key, oldbuttons))
 
 typedef struct
 {
@@ -93,13 +80,8 @@ typedef struct
 
 #define SCANLINECOUNTER (*(volatile unsigned short *) 0x4000006)
 
-// Use this variable to count vBlanks. Initialized in gba.c and to be
-// manipulated by waitForVBlank()
 extern u32 vBlankCounter;
 
-/*
- * Runs a blocking loop until the start of next VBlank.
- */
 void waitForVBlank(void);
 
 #define UNUSED(param) ((void)((param)))
@@ -116,8 +98,6 @@ void drawChar(int row, int col, char ch, u16 color);
 void drawString(int row, int col, char *str, u16 color);
 void drawCenteredString(int row, int col, int width, int height, char *str, u16 color);
 
-/* Contains the pixels of each character from a 6x8 font */
-// This is in the font.c file. You can replace the font if you want.
 extern const unsigned char fontdata_6x8[12288];
 
 #endif
