@@ -3,10 +3,6 @@
 volatile unsigned short *videoBuffer = (volatile unsigned short *) 0x6000000;
 u32 vBlankCounter = 0;
 
-/*
-  Wait until the start of the next VBlank. This is useful to avoid tearing.
-  Completing this function is required.
-*/
 void waitForVBlank(void) {
   while (SCANLINECOUNTER > 160);
 
@@ -14,18 +10,6 @@ void waitForVBlank(void) {
   
   vBlankCounter++;
 }
-  // TODO: IMPLEMENT
-
-  // (1)
-  // Write a while loop that loops until we're NOT in vBlank anymore:
-  // (This prevents counting one VBlank more than once if your app is too fast)
-
-  // (2)
-  // Write a while loop that keeps going until we're in vBlank:
-
-  // (3)
-  // Finally, increment the vBlank counter:
-
 
 static int __qran_seed = 42;
 static int qran(void) {
@@ -35,19 +19,10 @@ static int qran(void) {
 
 int randint(int min, int max) { return (qran() * (max - min) >> 15) + min; }
 
-/*
-  Sets a pixel in the video buffer to a given color.
-  Using DMA is NOT recommended. (In fact, using DMA with this function would be really slow!)
-*/
 void setPixel(int row, int col, u16 color) {
   videoBuffer[OFFSET(row, col, WIDTH)] = color;
 }
 
-/*
-  Draws a rectangle of a given color to the video buffer.
-  The width and height, as well as the top left corner of the rectangle, are passed as parameters.
-  This function can be completed using `height` DMA calls. 
-*/
 void drawRectDMA(int row, int col, int width, int height, volatile u16 color) {
   for (int i = 0; i < height; i++) {
     volatile u16* dst = &videoBuffer[(i + row) * WIDTH + col];
@@ -60,24 +35,12 @@ void drawRectDMA(int row, int col, int width, int height, volatile u16 color) {
 
 }
 
-/*
-  Draws a fullscreen image to the video buffer.
-  The image passed in must be of size WIDTH * HEIGHT.
-  This function can be completed using a single DMA call.
-*/
 void drawFullScreenImageDMA(const u16 *image) {
   DMA[3].src = image;
   DMA[3].dst = videoBuffer;
   DMA[3].cnt = (WIDTH * HEIGHT) | DMA_ON;
 }
 
-/*
-  Draws an image to the video buffer.
-  The width and height, as well as the top left corner of the image, are passed as parameters.
-  The image passed in must be of size width * height.
-  Completing this function is required.
-  This function can be completed using `height` DMA calls. Solutions that use more DMA calls will not get credit.
-*/
 void drawImageDMA(int row, int col, int width, int height, const u16 *image) {
   u16* videoBuffer = (u16*)0x6000000;
   int i;
@@ -90,12 +53,6 @@ void drawImageDMA(int row, int col, int width, int height, const u16 *image) {
   }
 }
 
-/*
-  Draws a rectangular chunk of a fullscreen image to the video buffer.
-  The width and height, as well as the top left corner of the chunk to be drawn, are passed as parameters.
-  The image passed in must be of size WIDTH * HEIGHT.
-  This function can be completed using `height` DMA calls.
-*/
 void undrawImageDMA(int row, int col, int width, int height, const u16 *image) {
   for (int i = 0; i < height; i++) {
     DMA[3].src = &image[i * WIDTH];
@@ -103,17 +60,13 @@ void undrawImageDMA(int row, int col, int width, int height, const u16 *image) {
     DMA[3].cnt = width | DMA_ON;
   }
 }
-/*
-  Fills the video buffer with a given color.
-  This function can be completed using a single DMA call.
-*/
+
 void fillScreenDMA(volatile u16 color) {
   DMA[3].src = &color;
   DMA[3].dst = videoBuffer;
   DMA[3].cnt = DMA_ON | DMA_DESTINATION_INCREMENT | DMA_SOURCE_FIXED | (WIDTH * HEIGHT / 2);
 }
 
-/* STRING-DRAWING FUNCTIONS (provided) */
 void drawChar(int row, int col, char ch, u16 color) {
   for (int i = 0; i < 6; i++) {
     for (int j = 0; j < 8; j++) {
