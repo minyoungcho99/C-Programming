@@ -1,9 +1,6 @@
 #ifndef GBA_H
 #define GBA_H
 
-// ---------------------------------------------------------------------------
-//                       USEFUL TYPEDEFS
-// ---------------------------------------------------------------------------
 /* An unsigned 32-bit (4-byte) type */
 typedef unsigned int u32;
 
@@ -13,9 +10,6 @@ typedef unsigned short u16;
 /* An unsigned 8-bit (1-byte) type. Note that this type cannot be written onto RAM directly. */
 typedef unsigned char u8;
 
-// ---------------------------------------------------------------------------
-//                       MODE3 MACROS
-// ---------------------------------------------------------------------------
 #define OFFSET(row, col, width) ((col)+(width)*(row))
 
 #define REG_DISPCNT (*(volatile unsigned short *) 0x4000000)
@@ -40,9 +34,6 @@ typedef unsigned char u8;
 // This is initialized in gba.c
 extern volatile unsigned short *videoBuffer;
 
-// ---------------------------------------------------------------------------
-//                       BUTTON INPUT
-// ---------------------------------------------------------------------------
 #define BUTTON_A        (1<<0)
 #define BUTTON_B        (1<<1)
 #define BUTTON_SELECT   (1<<2)
@@ -63,9 +54,6 @@ extern volatile unsigned short *videoBuffer;
 // macro to check if the button was pressed in the inputs.
 #define KEY_JUST_PRESSED(key, buttons, oldbuttons) (!KEY_DOWN(key, buttons) && KEY_DOWN(key, oldbuttons))
 
-// ---------------------------------------------------------------------------
-//                       DMA
-// ---------------------------------------------------------------------------
 typedef struct
 {
   const volatile void *src;
@@ -103,9 +91,6 @@ typedef struct
 #define DMA_IRQ (1 << 30)
 #define DMA_ON (1 << 31)
 
-// ---------------------------------------------------------------------------
-//                       VBLANK
-// ---------------------------------------------------------------------------
 #define SCANLINECOUNTER (*(volatile unsigned short *) 0x4000006)
 
 // Use this variable to count vBlanks. Initialized in gba.c and to be
@@ -117,23 +102,10 @@ extern u32 vBlankCounter;
  */
 void waitForVBlank(void);
 
-// ---------------------------------------------------------------------------
-//                       MISC
-// ---------------------------------------------------------------------------
 #define UNUSED(param) ((void)((param)))
 
-/*
- * Generates a pseudo-random number between min and max.
- *
- * @param  min bottom end of range (inclusive).
- * @param  max top end of range (exclusive).
- * @return random number in the given range.
- */
 int randint(int min, int max);
 
-// ---------------------------------------------------------------------------
-//                       DRAWING
-// ---------------------------------------------------------------------------
 void setPixel(int row, int col, u16 color);
 void drawRectDMA(int row, int col, int width, int height, volatile u16 color);
 void drawFullScreenImageDMA(const u16 *image);
