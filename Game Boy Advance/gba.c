@@ -44,8 +44,7 @@ void drawFullScreenImageDMA(const u16 *image) {
 void drawImageDMA(int row, int col, int width, int height, const u16 *image) {
   u16* videoBuffer = (u16*)0x6000000;
   int i;
-
-  // Use DMA to copy each row of the image to the video buffer
+  
   for (i = 0; i < height; i++) {
     DMA[3].src = &image[i * width];
     DMA[3].dst = &videoBuffer[(row + i) * WIDTH + col];
