@@ -1,5 +1,5 @@
 #include <stddef.h>
-#include "my_string.h"
+#include "string.h"
 /**
  * Calculates the length of a string.
  * @param s a constant string
