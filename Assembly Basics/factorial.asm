@@ -1,0 +1,97 @@
+.orig x3000
+    HALT
+
+MULTIPLY 
+ADD R6, R6, -4	
+STR R7, R6, 2 	
+STR R5, R6, 1 	
+ADD R5, R6, 0	
+ADD R6, R6, -5	
+STR R0, R5, -1
+STR R1, R5, -2
+STR R2, R5, -3
+STR R3, R5, -4
+STR R4, R5, -5
+
+LDR R0, R5, 4 ; R0 = A 
+LDR R1, R5, 5 ; R1 = B
+AND R2, R2, 0 ; R2 = ret
+
+FOR_CONDITION1
+AND R3, R3, 0	
+FOR1
+NOT R4, R3
+ADD R4, R4, 1	
+ADD R4, R4, R1	
+BRnz ENDFOR
+ADD R2, R2, R0	
+ADD R3, R3, 1	
+BR FOR1
+ENDFOR
+
+LDR R0, R5, 0 	
+STR R2, R5, 3  
+LDR R4, R5, -5
+LDR R3, R5, -4
+LDR R2, R5, -3
+LDR R1, R5, -2
+LDR R0, R5, -1
+ADD R6, R5, 0
+LDR R5, R6, 1
+LDR R7, R6, 2
+ADD R6, R6, 3
+
+RET
+
+FACTORIAL
+ADD R6, R6, -4 ; make space for RV, RA, old FP, and 1 local
+STR R7, R6, 2 	
+STR R5, R6, 1 	
+ADD R5, R6, 0
+ADD R6, R6, -5	
+STR R0, R5, -1
+STR R1, R5, -2
+STR R2, R5, -3
+STR R3, R5, -4
+STR R4, R5, -5
+
+LDR R0, R5, 4 ; R0 = n
+AND R1, R1, 0
+ADD R1, R1, 1 ; R1 = ret
+FOR_CONDITION2
+AND R2, R2, 0
+ADD R2, R2, 2	
+FOR2
+NOT R3, R2
+ADD R3, R3, 1	
+ADD R3, R3, R0	
+BRn ENDFOR2
+
+ADD R6, R6, -2
+STR R1, R6, 0
+STR R2, R6, 1
+JSR MULTIPLY
+LDR R1, R6, 0
+ADD R6, R6, 3
+
+ADD R2, R2, 1 ; i++
+BR FOR2
+ENDFOR2
+
+STR R1, R5, 3 ; store return val
+
+LDR R0, R5, 0 	
+LDR R4, R5, -5
+LDR R3, R5, -4
+LDR R2, R5, -3
+LDR R1, R5, -2
+LDR R0, R5, -1
+ADD R6, R5, 0
+LDR R5, R6, 1
+LDR R7, R6, 2
+ADD R6, R6, 3
+
+RET
+
+STACK .fill xF000
+.end
